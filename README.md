@@ -6,6 +6,7 @@
 import numpy as np
 
 from evaluate.metrics import r2, sensitivity, specificity
+from evaluate.schemas.evaluators import Truth
 from evaluate.schemas.metrics import EvaluationMetric
 from evaluate import Evaluator
 
