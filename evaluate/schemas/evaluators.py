@@ -4,16 +4,19 @@ from pydantic import BaseModel
 import pandas as pd
 import numpy as np
 
-from schemas.metrics import EvaluationMetric
-from utils.validators import validate_classifier
+from evaluate.schemas.metrics import EvaluationMetric
+from evaluate.utils.validators import validate_classifier
 
 class Evaluator(BaseModel):
 
-    test_df = pd.DataFrame
-    y_true = np.array
-    estimator = Any         # TODO: type check this better than Any
-    evaluation_metrics = List[EvaluationMetric]
-    slices = Optional[List[str]]
+    test_df: pd.DataFrame
+    y_true: np.array
+    estimator: Any         # TODO: type check this better than Any
+    evaluation_metrics: List[EvaluationMetric]
+    slices: Optional[List[str]]
+
+    class Config:
+        arbitrary_types_allowed = True
 
     def pre_validate(self) -> None:
 

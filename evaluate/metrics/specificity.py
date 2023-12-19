@@ -1,6 +1,6 @@
 import numpy as np
 
-from schemas.metrics import EvaluationMetric
+from evaluate.schemas.metrics import EvaluationMetric
 
 
 def spec(y_pred: np.array, y_true: np.array) -> np.float64:

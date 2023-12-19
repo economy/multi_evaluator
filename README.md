@@ -6,8 +6,8 @@
 import numpy as np
 
 from evaluate.metrics import r2, sensitivity, specificity
-from evaluate.schemas.evaluators import Evaluator
 from evaluate.schemas.metrics import EvaluationMetric
+from evaluate import Evaluator
 
 
 def custom_comp(y_pred: np.array, y_true: np.array) -> np.float64:
