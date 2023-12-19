@@ -20,8 +20,9 @@ my_custom_metric = EvaluationMetric(
 )
 
 evaluator = Evaluator(
+    full_df = df,
     test_df = Xte,
-    y_true = yte,
+    truths = [Truth(name='test_actuals', y_true=yte)],
     estimator = sklearn_model,
     evaluation_metrics = [r2, sensitivity, specificity, my_custom_metric],
     slices = ['country']
