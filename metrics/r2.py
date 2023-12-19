@@ -11,4 +11,9 @@ def r_square(y_pred: np.array, y_true: np.array) -> np.float64:
 
     return r2
 
-    
+
+r2 = EvaluationMetric(
+    name = "r2",
+    metric_fn=r_square,
+    allowed_models=["classifier", "regressor", "ranker"]
+)
