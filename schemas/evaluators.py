@@ -11,7 +11,7 @@ class Evaluator(BaseModel):
 
     test_df = pd.DataFrame
     y_true = np.array
-    estimator = Any
+    estimator = Any         # TODO: type check this better than Any
     evaluation_metrics = List[EvaluationMetric]
     slices = Optional[List[str]]
 
