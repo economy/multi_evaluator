@@ -11,7 +11,7 @@ from evaluate.utils.validators import validate_classifier
 class Truth(BaseModel):
 
     name: str
-    y_pred: np.array
+    y_true: np.array
 
     class Config:
         arbitrary_types_allowed = True
@@ -19,6 +19,7 @@ class Truth(BaseModel):
 
 class Evaluator(BaseModel):
 
+    full_df: pd.DataFrame
     test_df: pd.DataFrame
     truths: List[Truth]
     estimator: Any         # TODO: type check this better than Any
@@ -37,9 +38,9 @@ class Evaluator(BaseModel):
             # NB just covering corner case for non-classifier as regressor, would build this out to be complete
             model_type = 'regressor'
 
-        for y in self.evaluations:
-            if model_type not in y.metric.allowed_models:
-                raise ValueError(f"{model_type} is not a valid model type for {y.metric.name} metric")
+        for metric in self.metrics:
+            if model_type not in metric.allowed_models:
+                raise ValueError(f"{model_type} is not a valid model type for {metric.name} metric")
 
     def evaluate(self) -> pd.DataFrame:
 
@@ -49,18 +50,18 @@ class Evaluator(BaseModel):
         # compute predictions TODO: check valid sklearn model
         y_pred = self.estimator.predict(self.test_df.to_numpy())
         for truth in self.truths: 
-            self.test_df[truth.name] = truth.y_pred    
+            self.full_df[truth.name] = truth.y_true    
 
         evaluations = [
             {
                 "eval_name": f"{x.name}-{truth.name}", 
                 "metric_fn": x.metric_fn, 
-                "y_true": truth
+                "y_true": truth.y_true
             } for x in self.metrics for truth in self.truths
         ]
 
         # compute metrics
-        evals = self.test_df.groupby(self.slices).apply(
+        evals = self.full_df.groupby(self.slices).apply(
             lambda x: pd.Series(
                 data=[e["metric_fn"](y_pred, e["y_true"]) for e in evaluations], 
                 index=[ e["eval_name"] for e in evaluations]
